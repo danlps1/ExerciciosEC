@@ -1,5 +1,6 @@
-import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {GradeEntity} from "./grade.entity";
+import {NotaEntity} from "./nota.entity";
 
 @Entity('tb_alunos')
 export class AlunoEntity extends BaseEntity {
@@ -12,4 +13,7 @@ export class AlunoEntity extends BaseEntity {
 
     @ManyToOne(()=> GradeEntity, grade => grade.alunos)
     grade: GradeEntity;
+
+    @OneToMany(()=> NotaEntity, nota => nota.aluno)
+    notas: NotaEntity[];
 }

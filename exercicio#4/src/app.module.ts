@@ -8,6 +8,8 @@ import {MateriaEntity} from "./entity/materia.entity";
 import {AlunoModule} from "./modules/aluno/aluno.module";
 import {GradeModule} from "./modules/grade/grade.module";
 import {MateriaModule} from "./modules/materia/materia.module";
+import {NotaEntity} from "./entity/nota.entity";
+import {NotaModule} from "./modules/nota/nota.module";
 
 @Module({
   imports: [
@@ -18,9 +20,9 @@ import {MateriaModule} from "./modules/materia/materia.module";
       username: 'root',
       password: 'dbmysql',
       database: 'exercicio4',
-      entities: [AlunoEntity, GradeEntity, MateriaEntity],
+      entities: [AlunoEntity, GradeEntity, MateriaEntity, NotaEntity],
       synchronize: true,
-    }), AlunoModule, GradeModule, MateriaModule
+    }), AlunoModule, GradeModule, MateriaModule, NotaModule
   ],
   controllers: [AppController],
   providers: [AppService],
