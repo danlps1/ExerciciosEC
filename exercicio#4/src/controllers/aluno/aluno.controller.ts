@@ -7,14 +7,19 @@ export class AlunoController {
     constructor(private readonly alunoService: AlunoService) {
     }
 
-    @Get(':id')
-    async historicoAluno(@Param('id') id: number) {
-        return await this.alunoService.historicoAluno(id);
-    }
-
     @Get()
     async historicoAlunos() {
         return await this.alunoService.historicoAluno();
+    }
+
+    @Get('ranking')
+    async melhoresAlunosPorScore(){
+        return await this.alunoService.melhoresAlunosPorScore();
+    }
+
+    @Get(':id')
+    async historicoAluno(@Param('id') id: number) {
+        return await this.alunoService.historicoAluno(id);
     }
 
     @Post()

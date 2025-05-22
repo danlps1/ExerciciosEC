@@ -20,13 +20,29 @@ export class AlunoService {
     }
 
     async historicoAluno(id?: number) {
-        if (!id) {
+        if (id) {
             return await AlunoEntity.findOne({
                 where: {id: id},
-                relations: ['grade', 'grade.materias']
+                relations: ['grade', 'grade.materias', 'notas', 'notas.materia']
             })
         }
 
-        return await AlunoEntity.find({relations: ['grade', 'grade.materias']})
+        return await AlunoEntity.find({relations: ['grade', 'grade.materias', 'notas', 'notas.materia']})
     }
+
+    async melhoresAlunosPorScore() {
+        const alunos = await AlunoEntity.find({relations: ['notas']});
+
+        const alunosPorScore= alunos
+            .map(aluno => {
+                const notas = aluno.notas;
+                const soma = notas.reduce((acc, nota) => acc + nota.nota, 0);
+                const media = soma / notas.length;
+                return {aluno, media};
+            })
+            .sort((a, b) => b.media - a.media);
+
+        return alunosPorScore;
+    }
+
 }
