@@ -2,6 +2,9 @@ import {Injectable} from '@nestjs/common';
 import {AlunoDto} from "../../dto/aluno.dto";
 import {AlunoEntity} from "../../entity/aluno.entity";
 import {GradeEntity} from "../../entity/grade.entity";
+import any = jasmine.any;
+import {ScoreAlunos} from "../../model/types/scoreAlunos.type";
+import {map} from "rxjs";
 
 @Injectable()
 export class AlunoService {
@@ -30,19 +33,29 @@ export class AlunoService {
         return await AlunoEntity.find({relations: ['grade', 'grade.materias', 'notas', 'notas.materia']})
     }
 
-    async melhoresAlunosPorScore() {
-        const alunos = await AlunoEntity.find({relations: ['notas']});
+    async melhoresAlunosPorScore(): Promise<ScoreAlunos[]> {
+        const alunos = await AlunoEntity.find({relations: ['notas', 'notas.materia']});
 
-        const alunosPorScore= alunos
-            .map(aluno => {
-                const notas = aluno.notas;
-                const soma = notas.reduce((acc, nota) => acc + nota.nota, 0);
-                const media = soma / notas.length;
-                return {aluno, media};
-            })
-            .sort((a, b) => b.media - a.media);
+        const resultadoAluno: any = alunos.map(aluno => {
+            const melhoresNotas = aluno.notas
+                .map(n => n.nota)
+                .sort((a, b) => b - a)
+                .slice(0, 3)
 
-        return alunosPorScore;
+            if (melhoresNotas.length < 3 || melhoresNotas.some(nota => nota < 80))
+                return null;
+
+            const score = melhoresNotas.reduce((acc, nota) => acc + nota, 0) / melhoresNotas.length;
+
+            return {
+                aluno,
+                melhoresNotas,
+                score
+            }
+        }).filter(aluno => aluno !== null);
+
+        resultadoAluno.sort((a, b) => b.score - a.score);
+        return resultadoAluno;
     }
 
 }
