@@ -1,18 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MateriaService } from './materia.service';
+import { MateriaDto } from '../../dto/materia.dto';
 
-describe('MateriaService', () => {
-  let service: MateriaService;
+describe('UserService Testes', () => {
+  let materiaService: MateriaService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
       providers: [MateriaService],
     }).compile();
 
-    service = module.get<MateriaService>(MateriaService);
+    materiaService = moduleFixture.get<MateriaService>(MateriaService);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(materiaService).toBeDefined();
+  });
+
+  it('Deve cadastrar uma matéria', async () => {
+    const materia: MateriaDto = { nome: 'Português' };
+    materiaService.cadastrarMateria = jest.fn().mockReturnValueOnce({ nome: materia });
+    const result = await materiaService.cadastrarMateria(materia);
+    expect(result.nome).toEqual(materia);
   });
 });
